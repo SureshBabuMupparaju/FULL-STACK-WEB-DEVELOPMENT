@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>FoodItems Data</h1>
+    <table id="fooditemstable" border="1">
+        <thread>
+            <tr>
+                <th>allergens</th>
+                <th>food_group</th>
+                <th>description</th>
+                <th>ingredients</th>
+                <th>serving_size</th>
+                <th>certifications</th>
+                <th>food_item_name</th>
+                <th>health_benefits</th>
+                <th>country_of_origin</th>
+                <th>preperation_methods</th>
+                <th>dietary_restrictions</th>
+                <th>brand_or_manufacturer</th>
+                <th>nutritional_information</th>
+                <th>Action</th>
+            </tr>
+        </thread>
+        <tbody id="tableBody"></tbody>
+
+    </table>
+    <script>
+
+        console.log('hello')
+        fetch('http://localhost:3700/getfooditemsdata')
+        .then((res)=>res.json())
+        .then((data)=>{
+            console.log('data',data);
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML='';
+
+            //fooditems inside tbody
+
+            data.forEach(food=>{
+                const row=document.createElement('tr');
+                row.innerHTML=`
+                <td>${food.allergens}</td>
+                <td>${food.food_group}</td>
+                <td>${food.description}</td>
+                <td>${food.ingredients}</td>
+                <td>${food.serving_size}</td>
+                <td>${food.certifications}</td>
+                <td>${food.food_item_name}</td>
+                <td>${food.health_benefits}</td>
+                <td>${food.country_of_origin}</td>
+                <td>${food.preperation_methods}</td>
+                <td>${food.dietary_restrictions}</td>
+                <td>${food.brand_or_manufacturer}</td>
+                <td>${food.nutritional_information}</td>
+                <td><button onclick="editRow(this)">Edit</button>
+                    <button onclick="deleteRow('${food.food_item_name}')">Delete</button>
+                    <button style="display:none;"onclick="saveRow(this)">Save</button></td>
+                `
+                tableBody.appendChild(row);
+             })
+        })
+        .catch((e)=>console.log(e));
+        const deleteRow=async (foodId)=>{
+        try{
+            const response=await fetch(`http://localhost:3700/fooditems/${foodId}`,{
+                method: 'DELETE'
+            });
+            const data=await response.json();
+            //refresh 
+            location.reload();
+        }
+        catch(e){
+            console.log(e);
+        }
+    }
+    </script>
+    
+</body>
+</html>
